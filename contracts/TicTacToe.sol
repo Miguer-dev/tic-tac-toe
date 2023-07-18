@@ -20,10 +20,12 @@ contract TicTacToe {
     mapping(address => uint) public victories;
     Achievement private achievement5Wins;
     Achievement private achievementBoardNotFull;
+    Token private pointsToken;
 
-    constructor(address _achievement5WinsAddress, address _achievementBoardNotFullAddress) {
+    constructor(address _achievement5WinsAddress, address _achievementBoardNotFullAddress, address pointsTokenAddress) {
         achievement5Wins = Achievement(_achievement5WinsAddress);
         achievementBoardNotFull = Achievement(_achievementBoardNotFullAddress);
+        pointsToken = Token(pointsTokenAddress);
     }
 
     event newMatch(   
@@ -91,7 +93,7 @@ contract TicTacToe {
         emit newPlay(idMatch, cell, _msgSender());
 
         if ( _getWinner(idMatch) != address(0) ){
-            matches[idMatch].winner = _msgSender();
+            matches[idMatch].winner = _msgSender();            
             emit winnerMatch(idMatch, _msgSender());
 
             victories[_msgSender()] ++;
@@ -102,6 +104,12 @@ contract TicTacToe {
             if(_isNotFull(idMatch)){
                 achievementBoardNotFull.safeMint(_msgSender());    
             }
+
+            uint tokenMultiplier = 1;
+            if(achievement5Wins.balanceOf(_msgSender()) > 0 || achievementBoardNotFull.balanceOf(_msgSender()) > 0 ){
+                tokenMultiplier = 2;
+            }
+            pointsToken.mint(_msgSender(),1*tokenMultiplier);
             
         }  
     }
@@ -151,7 +159,7 @@ contract TicTacToe {
     }
 
     function _isNotFull (uint idMatch) internal view returns (bool){
-        bool result = false;
+        bool result;
 
         for (uint i = 0; i < 9; i++) 
         {
@@ -171,4 +179,9 @@ contract TicTacToe {
 
 interface Achievement {    
   function safeMint(address to) external returns(bool);
+  function balanceOf(address to) external returns(uint);
+}
+
+interface Token {    
+  function mint(address to, uint256 amount) external;
 }
