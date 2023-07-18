@@ -17,6 +17,14 @@ contract TicTacToe {
     }
 
     Match[] public matches;
+    mapping(address => uint) public victories;
+    Achievement private achievement5Wins;
+    Achievement private achievementBoardNotFull;
+
+    constructor(address _achievement5WinsAddress, address _achievementBoardNotFullAddress) {
+        achievement5Wins = Achievement(_achievement5WinsAddress);
+        achievementBoardNotFull = Achievement(_achievementBoardNotFullAddress);
+    }
 
     event newMatch(   
         uint idMatch,
@@ -85,6 +93,16 @@ contract TicTacToe {
         if ( _getWinner(idMatch) != address(0) ){
             matches[idMatch].winner = _msgSender();
             emit winnerMatch(idMatch, _msgSender());
+
+            victories[_msgSender()] ++;
+            if(victories[_msgSender()] == 5){
+                achievement5Wins.mint(_msgSender());    
+            } 
+
+            if(_isNotFull(idMatch)){
+                achievementBoardNotFull.mint(_msgSender());    
+            }
+            
         }  
     }
 
@@ -126,8 +144,26 @@ contract TicTacToe {
 
         return result;
     }
+
+    function _isNotFull (uint idMatch) internal view returns (bool){
+        bool result = false;
+
+        for (uint i = 0; i < 9; i++) 
+        {
+            if(matches[idMatch].board[i] == address(0)){
+                result = true;
+                break;
+            }   
+        }
+
+        return result;
+    }
  
     function _msgSender() internal view returns (address) {
         return msg.sender;
     }    
+}
+
+interface Achievement {    
+  function mint(address to) external;
 }
