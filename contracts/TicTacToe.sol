@@ -96,11 +96,11 @@ contract TicTacToe {
 
             victories[_msgSender()] ++;
             if(victories[_msgSender()] == 5){
-                achievement5Wins.mint(_msgSender());    
+                achievement5Wins.safeMint(_msgSender());    
             } 
 
             if(_isNotFull(idMatch)){
-                achievementBoardNotFull.mint(_msgSender());    
+                achievementBoardNotFull.safeMint(_msgSender());    
             }
             
         }  
@@ -110,7 +110,8 @@ contract TicTacToe {
 
         address result = address(0);
 
-        if((matches[idMatch].board[0] == matches[idMatch].board[0+1] && 
+        if( matches[idMatch].board[0] != address(0)                     && 
+           (matches[idMatch].board[0] == matches[idMatch].board[0+1] && 
             matches[idMatch].board[0] == matches[idMatch].board[0+2])   ||
            (matches[idMatch].board[0] == matches[idMatch].board[0+3] &&
             matches[idMatch].board[0] == matches[idMatch].board[0+6])   || 
@@ -119,24 +120,28 @@ contract TicTacToe {
         {
             result = matches[idMatch].board[0];    
         }
-        else if(matches[idMatch].board[1] == matches[idMatch].board[1+3] && 
+        else if(matches[idMatch].board[1] != address(0)                  && 
+                matches[idMatch].board[1] == matches[idMatch].board[1+3] && 
                 matches[idMatch].board[1] == matches[idMatch].board[1+6])                       
         {
             result = matches[idMatch].board[1];   
         }
-        else if((matches[idMatch].board[2] == matches[idMatch].board[2+2] && 
+        else if( matches[idMatch].board[2] != address(0)                    && 
+                (matches[idMatch].board[2] == matches[idMatch].board[2+2] && 
                  matches[idMatch].board[2] == matches[idMatch].board[2+4])  ||
                 (matches[idMatch].board[2] == matches[idMatch].board[2+3] && 
                  matches[idMatch].board[2] == matches[idMatch].board[2+6]))                       
         {
             result = matches[idMatch].board[2];   
         }
-        else if(matches[idMatch].board[3] == matches[idMatch].board[3+1] && 
+        else if(matches[idMatch].board[3] != address(0)                  &&
+                matches[idMatch].board[3] == matches[idMatch].board[3+1] && 
                 matches[idMatch].board[3] == matches[idMatch].board[3+2])                       
         {
             result = matches[idMatch].board[3];   
         }
-        else if(matches[idMatch].board[6] == matches[idMatch].board[6+1] && 
+        else if(matches[idMatch].board[6] != address(0)                  &&
+                matches[idMatch].board[6] == matches[idMatch].board[6+1] && 
                 matches[idMatch].board[6] == matches[idMatch].board[6+2])                       
         {
             result = matches[idMatch].board[6];   
@@ -165,5 +170,5 @@ contract TicTacToe {
 }
 
 interface Achievement {    
-  function mint(address to) external;
+  function safeMint(address to) external returns(bool);
 }
