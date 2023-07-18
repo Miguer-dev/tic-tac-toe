@@ -17,7 +17,7 @@ contract Achievement5Wins is ERC721("Achievement: 5 Wins", "A5W"), Ownable  {
     ); 
 
     function safeMint(address to) public onlyOwner returns(bool){
-        bool result = false;
+        bool result;
 
         if( balanceOf(to) == 0 ){
             uint256 tokenId = _tokenIdCounter.current();

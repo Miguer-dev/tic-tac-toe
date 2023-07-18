@@ -17,7 +17,7 @@ contract AchievementBoardNotFull is ERC721("Achievement: Board Not Full", "ABNF"
     ); 
 
     function safeMint(address to) public onlyOwner returns(bool){
-        bool result = false;
+        bool result;
 
         if( balanceOf(to) == 0 ){
             uint256 tokenId = _tokenIdCounter.current();
