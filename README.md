@@ -16,8 +16,8 @@ How to play?
 - You must take into account that the board squares are numbered as follows:
   
 
-                                                           1  |  2  |  3
+      1  |  2  |  3
 
-                                                           4  |  5  |  6
+      4  |  5  |  6
  
-                                                           7  |  8  |  9
+      7  |  8  |  9
