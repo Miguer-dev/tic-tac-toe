@@ -12,7 +12,7 @@ contract TicTacToe {
     }   
 
     struct Turn{
-        uint number; 
+        uint8 number; 
         address player;  
     }
 
@@ -65,18 +65,18 @@ contract TicTacToe {
         _;
     }
 
-    modifier wrongPlay(uint cell){
+    modifier wrongPlay(uint8 cell){
         require(cell >= 1 && cell <= 9, "Wrong move, the possible plays are from 1 to 9");         
         _;
     }
   
-    modifier allowedPlay(uint idMatch, uint cell){
+    modifier allowedPlay(uint idMatch, uint8 cell){
         require(matches[idMatch].board[cell-1] == address(0), "That move was already made");         
         _;
     }
    
 
-    function initMatch(address player1, address player2) public returns (uint){
+    function initMatch(address player1, address player2) external returns (uint){
 
         address[9] memory newBoard = [address(0),address(0),address(0),address(0),address(0),address(0),address(0),address(0),address(0)];  
         Match memory game = Match(player1,player2,Turn(1,address(0)),address(0),newBoard);
@@ -86,7 +86,7 @@ contract TicTacToe {
         return matches.length - 1;
     }
 
-    function play(uint idMatch, uint cell) matchExist(idMatch) playerOfTheMatch(idMatch) matchInProgress(idMatch) myTurn(idMatch) wrongPlay(cell) allowedPlay(idMatch,cell)  public{
+    function play(uint idMatch, uint8 cell) matchExist(idMatch) playerOfTheMatch(idMatch) matchInProgress(idMatch) myTurn(idMatch) wrongPlay(cell) allowedPlay(idMatch,cell)  external {
  
         matches[idMatch].board[cell-1] = _msgSender();
         matches[idMatch].nextTurn = Turn(matches[idMatch].nextTurn.number + 1, _msgSender() == matches[idMatch].player1 ? matches[idMatch].player2 : matches[idMatch].player1);
@@ -105,7 +105,7 @@ contract TicTacToe {
                 achievementBoardNotFull.safeMint(_msgSender());    
             }
 
-            uint tokenMultiplier = 1;
+            uint8 tokenMultiplier = 1;
             if(achievement5Wins.balanceOf(_msgSender()) > 0 || achievementBoardNotFull.balanceOf(_msgSender()) > 0 ){
                 tokenMultiplier = 2;
             }
@@ -161,7 +161,7 @@ contract TicTacToe {
     function _isNotFull (uint idMatch) internal view returns (bool){
         bool result;
 
-        for (uint i = 0; i < 9; i++) 
+        for (uint8 i = 0; i < 9; i++) 
         {
             if(matches[idMatch].board[i] == address(0)){
                 result = true;
